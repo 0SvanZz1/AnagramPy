@@ -1,5 +1,7 @@
 import random
 import sys, os
+import requests
+import json
 
 import gamer as ga
 
@@ -143,8 +145,40 @@ def clear_terminal():
     
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def get_word_database(topic, max):
+    """Get a word database based on a specified topic
+
+    Parameters
+    ----------
+    topic: str
+        Topic to serve as a base for the word database creation
+    max: int
+        Maximum number of words to be returned
+
+    Returns
+    -------
+    list of str
+        List of words to act as a word database
+    """
+    
+    word_db = []
+    
+    url = "https://api.datamuse.com/words?topics={}&max={}".format(topic, max)
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        response_content = json.loads(response.text)
+        for word_resp in response_content:
+            if word_resp['word'].isalpha():
+                word_db.append(word_resp['word'])
+    else:
+        print("There was an error while fetching words for the database")
+        sys.exit(1)
+
+    return word_db
+
 def main():
-    words = ['army','gun','tank','rifle','military','strategy','soldier']
+    words = get_word_database('war', 10)
     gamer = ga.Gamer()
 
     while True:
