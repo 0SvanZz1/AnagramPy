@@ -178,7 +178,19 @@ def get_word_database(topic, max):
     return word_db
 
 def main():
-    words = get_word_database('war', 10)
+    if len(sys.argv[1:]) != 2:
+        print("""
+        You're not executing it in the right way. Take this as an example:
+        $ python3 anagram.py War 15
+
+        Where 'War' is the topic and '15' the maximum number of words for the word database.
+
+        Try one more time!
+        """)
+        sys.exit(1)
+    
+    topic, max = sys.argv[1:]
+    words = get_word_database(topic, max)
     gamer = ga.Gamer()
 
     while True:
